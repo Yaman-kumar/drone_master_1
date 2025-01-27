@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the start method from the Dji class, for the Dart programming language.">
+  <title>start method - Dji class - dji library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">dji</a></li>
+    <li><a href="../../dji/dji-library.html">dji.dart</a></li>
+    <li><a href="../../dji/Dji-class.html">Dji</a></li>
+    <li class="self-crumb">start static method</li>
+  </ol>
+  <div class="self-name">start</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        brightness_4
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        brightness_5
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="dji&#47;Dji-class-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-method">start</span> static method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">start</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="start-param-flight">{<span>required</span> <span class="type-annotation"><a href="../../flight/Flight-class.html">Flight</a></span> <span class="parameter-name">flight</span>}</span></li>
+</ol>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Starts the DJI Drone Flight Timeline.</p>
+<p>The <a href="../../dji/Dji/start.html">start()</a> method receives a <code>flight</code> object (Flight Timeline) and commands the Drone to start executing it.</p>
+<p>The <a href="../../flight/Flight-class.html">Flight</a> class defines the different flight properties (e.g. location, waypoint, etc.) and provides tools to convert from and to JSON.</p>
+<p>In the example below, we first validate that the <code>DroneHomeLocation</code> exists and then define our Flight object, which includes several Flight Elements.</p>
+<p>A Flight Element has several types:</p>
+<ul>
+<li>takeOff</li>
+<li>land</li>
+<li>waypointMission</li>
+<li>singleShootPhoto</li>
+<li>startRecordVideo</li>
+<li>stopRecordVideo</li>
+</ul>
+<p>The <code>waypointMission</code> consists of a list of waypoints.
+Each waypoint can be defined in two ways: <code>location</code> or <code>vector</code>.</p>
+<p><strong>Location</strong> defines a waypoint by Latitude, Longitude and Altitude.</p>
+<p><strong>Vector</strong> defines a waypoint in relation to the "point of interest".
+It's defined by 3 properties as follows:</p>
+<ul>
+<li><code>distanceFromPointOfInterest</code>
+<ul>
+<li>The distance in meters between the "point of interest" and the Drone.</li>
+</ul>
+</li>
+<li><code>headingRelativeToPointOfInterest</code>
+<ul>
+<li>If you imagine a line between the "point of interest" (e.g. where you stand) and the Drone's Home Location - this is heading "0".
+<ul>
+<li>So the value of <code>headingRelativeToPointOfInterest</code> is the angle between heading "0" and where you want the Drone to be.</li>
+<li>A positive heading angle is to your right. While a negative angle is to your left.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>destinationAltitude</code>
+<ul>
+<li>This is the Drone's altitude at the waypoint.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Explanation by example:</strong>
+Imagine you are the "point of interest", holding a "laser pointer".
+Everything is relative to the "line" between you and the Drone.
+If you point the laser to the Drone itself - that's "heading 0".
+If you want the first waypoint to be 30 degrees to your right, at a distance of 100 meters and altitude of 10 meters, you should set:</p>
+<pre class="language-dart"><code>'vector': {
+  'distanceFromPointOfInterest': 100,
+  'headingRelativeToPointOfInterest': 30,
+  'destinationAltitude': 10,
+},
+</code></pre>
+<p>A full example showing how to use the Flight object and use the <code>Dji.start</code> method:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _start() async {
+  try {
+    droneHomeLocation = FlightLocation(
+        latitude: 32.2181125, longitude: 34.8674920, altitude: 0);
+
+    if (droneHomeLocation == null) {
+      developer.log(
+          'No drone home location exist - unable to start the flight',
+          name: kLogKindDjiFlutterPlugin);
+      return;
+    }
+
+    Flight flight = Flight.fromJson({
+      'timeline': [
+        {
+          'type': 'takeOff',
+        },
+        {
+          'type': 'startRecordVideo',
+        },
+        {
+          'type': 'waypointMission',
+          /// For example purposes, we set our Point of Interest a few meters away, relative to the Drone's Home Location
+          'pointOfInterest': {
+            'latitude': droneHomeLocation!.latitude + (5 * 0.00000899322),
+            'longitude': droneHomeLocation!.longitude + (5 * 0.00000899322),
+            'altitude': droneHomeLocation!.altitude,
+          },
+          'maxFlightSpeed':
+              15.0, /// Max Flight Speed is 15.0. If you enter a higher value - the waypoint mission won't start due to DJI limits.
+          'autoFlightSpeed': 10.0,
+          'finishedAction': 'noAction',
+          'headingMode': 'towardPointOfInterest',
+          'flightPathMode': 'curved',
+          'rotateGimbalPitch': true,
+          'exitMissionOnRCSignalLost': true,
+          'waypoints': [
+            {
+              // 'location': {
+              //   'latitude': 32.2181125,
+              //   'longitude': 34.8674920,
+              //   'altitude': 20.0,
+              // },
+              'vector': {
+                'distanceFromPointOfInterest': 20,
+                'headingRelativeToPointOfInterest': 45,
+                'destinationAltitude': 5,
+              },
+              // 'heading': 0,
+              'cornerRadiusInMeters': 5,
+              'turnMode': 'clockwise',
+              // 'gimbalPitch': 0,
+            },
+            {
+              // 'location': {
+              //   'latitude': 32.2181125,
+              //   'longitude': 34.8674920,
+              //   'altitude': 5.0,
+              // },
+              'vector': {
+                'distanceFromPointOfInterest': 10,
+                'headingRelativeToPointOfInterest': -45,
+                'destinationAltitude': 3,
+              },
+              // 'heading': 0,
+              'cornerRadiusInMeters': 5,
+              'turnMode': 'clockwise',
+              // 'gimbalPitch': 0,
+            },
+          ],
+        },
+        {
+          'type': 'stopRecordVideo',
+        },
+        {
+          'type': 'singleShootPhoto',
+        },
+        {
+          'type': 'land',
+        },
+      ],
+    });
+
+    // Converting any vector definitions in waypoint-mission to locations
+    for (dynamic element in flight.timeline) {
+      if (element.type == FlightElementType.waypointMission) {
+        CoordinatesConvertion
+            .convertWaypointMissionVectorsToLocationsWithGimbalPitch(
+                flightElementWaypointMission: element,
+                droneHomeLocation: droneHomeLocation!);
+      }
+    }
+
+    developer.log(
+      'Flight Object: ${jsonEncode(flight)}',
+      name: kLogKindDjiFlutterPlugin,
+    );
+
+    await Dji.start(flight: flight);
+    developer.log(
+      'Start Flight succeeded',
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } on PlatformException catch (e) {
+    developer.log(
+      'Start Flight PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'Start Flight Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+}
+</code></pre>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">static Future&lt;void&gt; start({required Flight flight}) async {
+  Map&lt;String, dynamic&gt; flightJson = flight.toJson();
+
+  await _api?.start(jsonEncode(flightJson));
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">dji</a></li>
+    <li><a href="../../dji/dji-library.html">dji</a></li>
+    <li><a href="../../dji/Dji-class.html">Dji</a></li>
+    <li class="self-crumb">start static method</li>
+</ol>
+
+
+    <h5>Dji class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    dji
+      1.0.13
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
