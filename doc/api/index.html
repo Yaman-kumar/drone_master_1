@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 8.0.3">
+  <meta name="description" content="dji API docs, for the Dart programming language.">
+  <title>dji - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://dragonx.cloud/">dji package</a></li>
+  </ol>
+  <div class="self-name">dji</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        brightness_4
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        brightness_5
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="dji">dji</h1>
+<p><a href="https://codemagic.io/apps/61a1e99d95aace19d105564c/61a1e99d95aace19d105564b/latest_build"><img src="https://api.codemagic.io/apps/61a1e99d95aace19d105564c/61a1e99d95aace19d105564b/status_badge.svg" alt="Codemagic build status"></a></p>
+<h2 id="a-flutter-plugin-for-dji-sdk">A FLUTTER PLUGIN FOR DJI SDK</h2>
+<p>This open source project intends to bring the DJI SDK functionalities into Flutter.</p>
+<p>We strongly advice to first read at least the DJI Hardware Introduction:<br>
+<a href="https://developer.dji.com/document/52b7f3b9-a773-47b3-b9e5-71c7a3190736">https://developer.dji.com/document/52b7f3b9-a773-47b3-b9e5-71c7a3190736</a><br>
+And the DJI Mobile SDK Introduction:<br>
+<a href="https://developer.dji.com/document/4cd08995-3952-4db6-ab6e-bc3a754da153">https://developer.dji.com/document/4cd08995-3952-4db6-ab6e-bc3a754da153</a><br>
+To get familiar with the basic terminology and concepts.</p>
+<p>The plugin supports the following features:</p>
+<ul>
+<li>Register</li>
+<li>Connect / Disconnect</li>
+<li>Takeoff</li>
+<li>Land</li>
+<li>Start Timeline:
+<ul>
+<li>Takeoff
+<ul>
+<li>Land</li>
+<li>Take a picture</li>
+<li>Start/Stop video</li>
+<li>Waypoints Mission</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Mobile Remote Controller (Wifi)</li>
+<li>Virtual Stick (Physical Remote)</li>
+<li>Gimbal Rotate (Pitch)</li>
+<li>Get Media Files List</li>
+<li>Download Media File by Index</li>
+<li>Delete Media File by Index</li>
+<li>Live Video Feed (rawvideo YUV420p)</li>
+<li>Start/Stop Video Recording</li>
+</ul>
+<h2 id="setup">SETUP</h2>
+<p>Before you start using the DJI Flutter plugin, you must first perform some initial setup and configurations as required by DJI SDK.</p>
+<h3 id="getting-dji-developer-credentials">Getting DJI Developer Credentials</h3>
+<p>In order to use DJI SDK, you need to become a DJI Developer:
+<a href="https://developer.dji.com/">https://developer.dji.com/</a></p>
+<p>Once registered and signed-in, you need to create two new apps - one for Android and one for iOS.<br>
+Make sure you fill-in your correct App package-name as defined when you created your Flutter project.</p>
+<p>Once your Apps are registered on DJI Developer Portal, you have an "App Key" for each one.
+This App Key should be included in your Android Manifest XML and iOS info.plist as described later on.</p>
+<p>You may search the Github /example folder to locate the App Keys that were used in the example project:<br>
+<code>cloud.dragonx.plugin.flutter.djiExample</code> on iOS is using <code>b5245cf16f4b43ed90d436ba</code><br>
+<code>cloud.dragonx.plugin.flutter.djiExample</code> on Android is using <code>23acf68f822be3f065e6f538</code></p>
+<h5 id="note">Note</h5>
+<p>The best way to create a Flutter project with your desired package-name is by command line and the --org argument:</p>
+<pre class="language-dart"><code>mkdir yourAppNAme
+cd ./yourAppName
+flutter create --org com.yourdomain --project-name yourAppName .
+</code></pre>
+<p>(notice the "." at the end)<br>
+<a href="https://flutteragency.com/create-a-new-project-in-flutter/">https://flutteragency.com/create-a-new-project-in-flutter/</a></p>
+<p><strong>For a tip in regards to package names - please <a href="#a-tip-in-regards-to-package-names">read this</a>.</strong></p>
+<h3 id="configuring-the-dji-sdk-on-your-flutter-ios-project">Configuring the DJI SDK on your Flutter iOS Project</h3>
+<p>The DJI SDK is automatically added by the plugin.<br>
+However, we still need to configure a few parameters directly on the iOS project via Xcode.</p>
+<h5 id="1-configure-build-settings">1. Configure Build Settings</h5>
+<ul>
+<li>Open your Flutter iOS Workspace in Xcode.</li>
+<li>Click the "Runner" label on the top-left of the left Sidebar.</li>
+<li>Then, make sure you are on Targets &gt; Runner (middle Sidebar).</li>
+<li>Click the "info" tab (in between the Resource Tags and the Build Settings).</li>
+<li>Under the "Custom iOS Target Properties" section - right click on the last row and choose "Add Row" and add the following:
+<ul>
+<li>Add "Supported external accessory protocols" with 3 items:
+<ul>
+<li>Item0 = com.dji.common</li>
+<li>Item1 = com.dji.protocol</li>
+<li>Item2 = com.dji.video</li>
+</ul>
+</li>
+<li>Add the "App Transport Security Settings" key &gt; click the "+" and choose "Allow Arbitrary Loads" and change the value to "YES".</li>
+</ul>
+</li>
+</ul>
+<h5 id="2-update-the-infoplist">2. Update the info.plist</h5>
+<ul>
+<li><strong>Create a <code>DJISDKAppKey</code> key in the info.plist file and paste the App Key string into its string value (right click on any of the existing rows or below them and add a new row).</strong></li>
+<li>Add the key <code>NSBluetoothAlwaysUsageDescription</code> to the Info.plist with a description explaining that the DJI Drone requires bluetooth connection.</li>
+</ul>
+<h5 id="3-sign-your-app-and-run-it-first-from-within-xcode">3. Sign your App and run it first from within Xcode</h5>
+<ul>
+<li>Before you try to run your app from Flutter, you better try to build it from within Xcode.</li>
+<li>You also need to first make sure that you sign your app via Xcode:</li>
+<li>Click the "Runner" label on the top-left of the left Sidebar and then click the tab "Signing &amp; Capabilities".</li>
+<li>Choose your Team (per your Apple developer account team) and choose your signing certificates (or simply check the Automatically manage signing checkbox).</li>
+</ul>
+<p><strong><code> ! </code> Important Note</strong>
+If you try to archive / build your App from Xcode or Flutter, and receive an error saying:</p>
+<pre class="language-dart"><code>While building module 'DJISDK' imported from...
+Encountered error while building for device.
+</code></pre>
+<p>It's most probably because the Architecture it was trying to build for was not arm64.
+You can fix this by openining Xcode &gt; and under the Build Settings tab &gt; search for "Architectures", and change the value there to <code>arm64</code> (instead of the "Standard Architectures" that is the default there).</p>
+<h5 id="note-2">Note</h5>
+<p>Full details of setting up the DJI SDK for iOS can be found here:<br>
+<a href="https://developer.dji.com/document/76942407-070b-4542-8042-204cfb169168">https://developer.dji.com/document/76942407-070b-4542-8042-204cfb169168</a></p>
+<h3 id="configuring-the-dji-sdk-on-your-flutter-android-kotlin-project">Configuring the DJI SDK on your Flutter Android (Kotlin) Project</h3>
+<p>The DJI SDK is automatically added by the plugin.<br>
+However, we still need to configure a few parameters directly on the Android project via Android Studio.</p>
+<blockquote>
+<p><strong><code> ! </code> Important Note</strong>
+On Android - the DJI SDK cannot run the Simulator.
+If you try to run it on the Android Emulator - it will launch and immediately crash.
+This is due to a DJI SDK limitation.
+In any case, in order to truly develop while being connected to the Drone, you must run the app on an actual device (for both iOS and Android).</p>
+</blockquote>
+<h5 id="1-upgrade-to-kotlin">1. Upgrade to Kotlin</h5>
+<p>Edit the <code>android/grade/wrapper/gradle-wrapper.properties</code> file, and update the last line to:</p>
+<pre class="language-dart"><code>distributionUrl=https\://services.gradle.org/distributions/gradle-7.0.2-all.zip
+</code></pre>
+<p>Then, update the <code>buildScript</code> in the <code>android/build.gradle</code> file to:</p>
+<pre class="language-dart"><code>buildscript {
+    ext.kotlin_version = '1.7.0'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+</code></pre>
+<p>Lastly, open the Project in Android Studio and let the Gradle sync.
+Please note this "sync" might take several long minutes.</p>
+<h5 id="2-updated-the-android-manifest-xml">2. Updated the Android Manifest XML</h5>
+<p>Below the <manifest> tag and above the <application> tag, add the following permissions:
+(you might not need all of these, but usually that's what's needed for full functionality of the DJI SDK)</application></manifest></p>
+<pre class="language-dart"><code>&lt;manifest xmlns:android="http://schemas.android.com/apk/res/android" package="..."&gt;
+  &lt;!-- Permissions and features --&gt;
+  &lt;uses-permission android:name="android.permission.BLUETOOTH" /&gt;
+  &lt;uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /&gt;
+  &lt;uses-permission android:name="android.permission.VIBRATE" /&gt;
+  &lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+  &lt;uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /&gt;
+  &lt;uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /&gt;
+  &lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /&gt;
+  &lt;uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /&gt;
+  &lt;uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /&gt;
+  &lt;uses-permission android:name="android.permission.RECORD_AUDIO" /&gt;
+  &lt;uses-permission android:name="android.permission.READ_PHONE_STATE" /&gt;
+  &lt;uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" /&gt;
+  &lt;uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /&gt;
+  &lt;uses-permission android:name="android.permission.READ_MEDIA_AUDIO" /&gt;
+  &lt;uses-permission android:name="android.permission.READ_MEDIA_VIDEO" /&gt;
+
+  &lt;uses-feature android:name="android.hardware.camera" /&gt;
+  &lt;uses-feature android:name="android.hardware.camera.autofocus" /&gt;
+  &lt;uses-feature
+      android:name="android.hardware.usb.host"
+      android:required="false" /&gt;
+  &lt;uses-feature
+      android:name="android.hardware.usb.accessory"
+      android:required="true" /&gt;
+</code></pre>
+<p>Below the <code>&lt;application&gt;</code> tag and above the <code>&lt;activity&gt;</code> tag, add the following and fill-in your Android DJI App Key:</p>
+<pre class="language-dart"><code>&lt;application
+  ...
+  android:usesCleartextTraffic="true"&gt;
+  ...
+  &lt;!-- Start of DJI SDK --&gt;
+  &lt;uses-library android:name="com.android.future.usb.accessory" /&gt;
+  &lt;uses-library android:name="org.apache.http.legacy" android:required="false" /&gt;
+  &lt;meta-data android:name="com.dji.sdk.API_KEY" android:value="{{your-dji-app-key}}" /&gt;
+  &lt;!-- End of DJI SDK --&gt;
+  
+  &lt;activity...
+</code></pre>
+<h5 id="3-update-androidappbuildgradle">3. Update android/app/build.gradle</h5>
+<p>Open the android/app/build.grade file and update the following:</p>
+<ul>
+<li>Set the compileSdkVersion to 33</li>
+<li>Set defaultConfig parameters with minSdkVersion 24 and targetSdkVersion 31.
+Also, <strong>add and make sure multiDexEnabled is set to TRUE</strong>:</li>
+</ul>
+<pre class="language-dart"><code>android {
+    compileSdkVersion 33
+    ...
+    defaultConfig {
+        ...
+        minSdkVersion 24
+        targetSdkVersion 31
+        ...
+
+        multiDexEnabled true
+    }
+}
+</code></pre>
+<ul>
+<li>Below the <code>buildTypes</code> add the <code>packagingOptions</code> section to exclude the <code>rxjava.properties</code>:</li>
+</ul>
+<pre class="language-dart"><code>packagingOptions {
+  exclude 'META-INF/rxjava.properties'
+}
+</code></pre>
+<ul>
+<li>Under the dependencies section - include the following dependencies:</li>
+</ul>
+<pre class="language-dart"><code>dependencies {
+    ...
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0'
+}
+</code></pre>
+<h5 id="4-validate-gradleproperties">4. Validate gradle.properties</h5>
+<p>Open android/gradle.properties and validate that you have both these lines with value TRUE:</p>
+<pre class="language-dart"><code>android.useAndroidX=true
+android.enableJetifier=true
+</code></pre>
+<h5 id="note-3">Note</h5>
+<p>Full details of setting up the DJI SDK for Android can be found here:<br>
+<a href="https://developer.dji.com/mobile-sdk/documentation/application-development-workflow/workflow-integrate.html#android-studio-project-integration">https://developer.dji.com/mobile-sdk/documentation/application-development-workflow/workflow-integrate.html#android-studio-project-integration</a></p>
+<p>If you wish to learn and experiment with the DJI SDK on Android - here are some useful links and tips.</p>
+<p>DJI Android Sample App:<br>
+<a href="https://github.com/dji-sdk/Mobile-SDK-Android/tree/master/Sample%2520Code">https://github.com/dji-sdk/Mobile-SDK-Android/tree/master/Sample%20Code</a></p>
+<p>Another useful demo app - Android Simulator Demo:<br>
+<a href="https://github.com/DJI-Mobile-SDK-Tutorials/Android-SimulatorDemo/blob/master/DJISimulatorDemo/app/src/main/java/com/dji/simulatorDemo/MainActivity.java">https://github.com/DJI-Mobile-SDK-Tutorials/Android-SimulatorDemo/blob/master/DJISimulatorDemo/app/src/main/java/com/dji/simulatorDemo/MainActivity.java</a></p>
+<p>The DJI Tutorial can be found here below, but please note you must rely on the above Github Repo as reference, because many of the code examples inside this tutorial are outdated:
+<a href="https://developer.dji.com/mobile-sdk/documentation/application-development-workflow/workflow-integrate.html#import-maven-dependency">https://developer.dji.com/mobile-sdk/documentation/application-development-workflow/workflow-integrate.html#import-maven-dependency</a></p>
+<p>If you're trying to run the DJI sample, then note that in MainActivity.kt - Need to remove "import android.R".</p>
+<h3 id="preparing-your-development-environment--simulator">Preparing your Development Environment &amp; Simulator</h3>
+<ul>
+<li>Your DJI Drone should be connected by a USB to your computer.</li>
+<li>You should install the DJI Assistance &gt; connect to the Drone &gt; open and start the simulator.</li>
+<li>The remote control should be connected by cable to your development mobile device.</li>
+<li>The mobile device should be connected to the same Wifi as your computer.
+<ul>
+<li>For iOS Xcode - this should be sufficient to allow Xcode to install and debug your app on the mobile device.
+<ul>
+<li>For Android - use <a href="#debugging-android-over-wifi">these instructions</a> to allow Wifi installation and debugging.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="usage">USAGE</h2>
+<p>Once you have completed the above setup, you are ready to start using the DJI Flutter plugin in your Flutter code.</p>
+<p>For general knowledge, the <code>Dji</code> class is using the <code>DjiHostApi</code> class to trigger methods on the "host platform" (the native part).
+The <code>DjiFlutterApi</code> class is responsible for allowing the host to trigger methods on the Flutter side.</p>
+<p>A full example can be found in the example/lib/example.dart file:<br>
+<a href="https://github.com/DragonX-cloud/dji_flutter_plugin/blob/main/example/lib/example.dart">https://github.com/DragonX-cloud/dji_flutter_plugin/blob/main/example/lib/example.dart</a></p>
+<h3 id="getting-continuous-updates-of-the-drone-status">Getting continuous updates of the Drone Status</h3>
+<p>We want the drone to to send us statuses.<br>
+This is handled by the <code>DjiFlutterApi</code> class.</p>
+<p>The <code>DjiFlutterApi.setStatus(Drone drone)</code> method is triggered by the native platform part every time there is an update to the Drone's state, location, angle, etc.
+Currently, the Drone class has a String property <code>status</code> with a description of the state.
+This will later on be changed to a DroneState class of its own, with an Enum code and a String description.</p>
+<p>Currently, the possible <code>drone.status</code> strings are:</p>
+<pre class="language-dart"><code>Registered
+Connected
+Disconnected
+Delegated
+Error
+Mobile Remote
+Mobile Remote Failed
+Virtual Stick
+Virtual Stick Failed
+Gimbal Rotated
+Gimbal Failed
+Takeoff
+Takeoff Failed
+Land
+Land Failed
+Started
+Start Failed
+Got Media List
+Media List Failed
+Download Started (Once a download started - the drone.status changes to the actual percentage progress)
+Downloaded
+Download Failed
+Deleted
+Delete Failed
+Video Started
+Video Start Failed
+Video Stopped
+Video Stop Failed
+Record Started
+Record Start Failed
+Record Stopped
+Record Stop Failed
+</code></pre>
+<h4 id="extend-your-widget-with-djiflutterapi">Extend your Widget with DjiFlutterApi</h4>
+<p>First, extend your Widget with DjiFlutterApi, define the drone properties, and override your initState() method with the <code>_initDroneState()</code> and <code>DjiFlutterApi.setup()</code> methods per your needs.</p>
+<pre class="language-dart"><code>class _ExampleWidgetState extends State&lt;ExampleWidget&gt;
+    implements DjiFlutterApi {
+  String _platformVersion = 'Unknown';
+  String _droneStatus = 'Disconnected';
+  String _droneError = '';
+  String _droneBatteryPercent = '0';
+  String _droneAltitude = '0.0';
+  String _droneLatitude = '0.0';
+  String _droneLongitude = '0.0';
+  String _droneSpeed = '0.0';
+  String _droneRoll = '0.0';
+  String _dronePitch = '0.0';
+  String _droneYaw = '0.0';
+
+  FlightLocation? droneHomeLocation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    DjiFlutterApi.setup(this);
+
+    ...
+  }
+  ...
+</code></pre>
+<h4 id="setstatus">setStatus</h4>
+<p>Once we defined our private properties that we wish to get from the Drone, let's override the <code>setStatus()</code> method.<br>
+<strong>The <code>setStatus()</code> method is triggered by the native host side of the plugin whenever the Drone status is changed.</strong></p>
+<p>Example:</p>
+<pre class="language-dart"><code>@override
+void setStatus(Drone drone) async {
+  setState(() {
+    _droneStatus = drone.status ?? 'Disconnected';
+    _droneError = drone.error ?? '';
+    _droneAltitude = drone.altitude?.toStringAsFixed(2) ?? '0.0';
+    _droneBatteryPercent = drone.batteryPercent?.toStringAsFixed(0) ?? '0';
+    _droneLatitude = drone.latitude?.toStringAsFixed(7) ?? '0.0';
+    _droneLongitude = drone.longitude?.toStringAsFixed(7) ?? '0.0';
+    _droneSpeed = drone.speed?.toStringAsFixed(2) ?? '0.0';
+    _droneRoll = drone.roll?.toStringAsFixed(3) ?? '0.0';
+    _dronePitch = drone.pitch?.toStringAsFixed(3) ?? '0.0';
+    _droneYaw = drone.yaw?.toStringAsFixed(3) ?? '0.0';
+  });
+
+  // Setting the inital drone location as the home location of the drone.
+  if (droneHomeLocation == null &amp;&amp;
+      drone.latitude != null &amp;&amp;
+      drone.longitude != null &amp;&amp;
+      drone.altitude != null) {
+    droneHomeLocation = FlightLocation(
+        latitude: drone.latitude!,
+        longitude: drone.longitude!,
+        altitude: drone.altitude!);
+  }
+}
+</code></pre>
+<p>Note that as soon as we get the first status from the Drone - we set the <code>droneHomeLocation</code> property.
+This is simply useful for other parts of the Example project.</p>
+<h3 id="sending-commands-to-the-drone">Sending Commands to the Drone</h3>
+<p>The <code>Dji</code> class provides us with methods to connect and operate the Drone.</p>
+<h4 id="djiplatformversion">Dji.platformVersion</h4>
+<p>The <code>Dji.platformVersion</code> gets the host (native platform) version (e.g. The iOS or Android version).</p>
+<p>Example:</p>
+<pre class="language-dart"><code>// Platform messages are asynchronous, so we initialize in an async method.
+Future&lt;void&gt; _getPlatformVersion() async {
+  String platformVersion;
+
+  // Platform messages may fail, so we use a try/catch PlatformException.
+  // We also handle the message potentially returning null.
+  try {
+    platformVersion = await Dji.platformVersion ?? 'Unknown platform version';
+  } on PlatformException {
+    platformVersion = 'Failed to get platform version.';
+  }
+
+  // If the widget was removed from the tree while the asynchronous platform
+  // message was in flight, we want to discard the reply rather than calling
+  // setState to update our non-existent appearance.
+  if (!mounted) return;
+
+  setState(() {
+    _platformVersion = platformVersion;
+  });
+}
+</code></pre>
+<h4 id="djiregisterapp">Dji.registerApp</h4>
+<p>The <code>Dji.registerApp</code> triggers the DJI SDK registration method.<br>
+This is a required action, everytime we launch our app, and before we attempt to connect to the Drone.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _registerApp() async {
+  try {
+    await Dji.registerApp;
+    developer.log(
+      'registerApp succeeded',
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } on PlatformException catch (e) {
+    developer.log(
+      'registerApp PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'registerApp Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+}
+</code></pre>
+<h4 id="djiconnectdrone">Dji.connectDrone</h4>
+<p>The <code>Dji.connectDrone</code> method triggers the process of connecting to the Drone.</p>
+<p>The Remote Controller and the DJI Drone need to be turned on.
+The Remote Controller needs to be connected by USB cable to the mobile device running the app.
+Once connected, the <code>DjiFlutterApi.setStatus()</code> method is triggered and the status is changed to "Connected".</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _connectDrone() async {
+  try {
+    await Dji.connectDrone;
+    developer.log(
+      'connectDrone succeeded',
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } on PlatformException catch (e) {
+    developer.log(
+      'connectDrone PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'connectDrone Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+}
+</code></pre>
+<h4 id="djidisconnectdrone">Dji.disconnectDrone</h4>
+<p>The <code>Dji.disconnectDrone</code> method triggers the process of disconnecting from the Drone.</p>
+<p>Once disconnected, the DjiFlutterApi.setStatus() method is triggered and the status is changed to "Disconnected".</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _disconnectDrone() async {
+  try {
+    await Dji.disconnectDrone;
+    developer.log(
+      'disconnectDrone succeeded',
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } on PlatformException catch (e) {
+    developer.log(
+      'disconnectDrone PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'disconnectDrone Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+}
+</code></pre>
+<h4 id="djidelegatedrone">Dji.delegateDrone</h4>
+<p>The <code>Dji.delegateDrone</code> method triggers the "listeners" to the Drone's statuses.
+Upon any change to the Drone status properties - the SetState() method is triggerred (on the Flutter side).</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _delegateDrone() async {
+  try {
+    await Dji.delegateDrone;
+    developer.log(
+      'delegateDrone succeeded',
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } on PlatformException catch (e) {
+    developer.log(
+      'delegateDrone PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'delegateDrone Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+}
+</code></pre>
+<h4 id="djitakeoff">Dji.takeOff</h4>
+<p>The <code>Dji.takeOff</code> method commands the Drone to start take-off.</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _takeOff() async {
+  try {
+    await Dji.takeOff;
+    developer.log(
+      'Takeoff succeeded',
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } on PlatformException catch (e) {
+    developer.log(
+      'Takeoff PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'Takeoff Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+}
+</code></pre>
+<h4 id="djiland">Dji.land</h4>
+<p>The <code>Dji.land</code> method commands the Drone to start landing.</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _land() async {
+  try {
+    await Dji.land;
+    developer.log(
+      'Land succeeded',
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } on PlatformException catch (e) {
+    developer.log(
+      'Land PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'Land Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+}
+</code></pre>
+<h3 id="djistart">Dji.start</h3>
+<p>The <code>Dji.start</code> method receives a Flight Timeline object and commands the Drone to start executing it.</p>
+<p>The <code>Flight</code> class defines the different flight properties (e.g. location, waypoint, etc.) and provides tools to convert from and to JSON.</p>
+<p>In the example below, the we first validate that the <code>DroneHomeLocation</code> exists and then we define our Flight object, which includes several Flight Elements.</p>
+<p>A Flight Element has several types:</p>
+<ul>
+<li>takeOff</li>
+<li>land</li>
+<li>waypointMission</li>
+<li>singleShootPhoto</li>
+<li>startRecordVideo</li>
+<li>stopRecordVideo</li>
+</ul>
+<p>The <code>waypointMission</code> consists of a list of waypoints.
+Each waypoint can be defined in two ways: <code>location</code> or <code>vector</code>.</p>
+<p><strong>Location</strong> defines a waypoint by Latitude, Longitude and Altitude.</p>
+<p><strong>Vector</strong> defines a waypoint in relation to the "point of interest".
+It's defined by 3 properties as follows:</p>
+<ul>
+<li><code>distanceFromPointOfInterest</code>
+<ul>
+<li>The distance in meters between the "point of interest" and the Drone.</li>
+</ul>
+</li>
+<li><code>headingRelativeToPointOfInterest</code>
+<ul>
+<li>If you imagine a line between the "point of interest" (e.g. where you stand) and the Drone's Home Location - this is heading "0".
+<ul>
+<li>So the value of <code>headingRelativeToPointOfInterest</code> is the angle between heading "0" and where you want the Drone to be.</li>
+<li>A positive heading angle is to your right. While a negative angle is to your left.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>destinationAltitude</code>
+<ul>
+<li>This is the Drone's altitude at the waypoint.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Explanation by example:</strong>
+Imagine you are the "point of interest", holding a "laser pointer".<br>
+Everything is relative to the "line" between you and the Drone.<br>
+If you point the laser to the Drone itself - that's "heading 0".<br>
+If you want the first waypoint to be 30 degrees to your right, at a distance of 100 meters and altitude of 10 meters, you should set:</p>
+<pre class="language-dart"><code>'vector': {
+  'distanceFromPointOfInterest': 100,
+  'headingRelativeToPointOfInterest': 30,
+  'destinationAltitude': 10,
+},
+</code></pre>
+<p>A full example showing how to use the Flight object and use the <code>Dji.start</code> method:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _start() async {
+  try {
+    droneHomeLocation = FlightLocation(
+        latitude: 32.2181125, longitude: 34.8674920, altitude: 0);
+
+    if (droneHomeLocation == null) {
+      developer.log(
+          'No drone home location exist - unable to start the flight',
+          name: kLogKindDjiFlutterPlugin);
+      return;
+    }
+
+    Flight flight = Flight.fromJson({
+      'timeline': [
+        {
+          'type': 'takeOff',
+        },
+        {
+          'type': 'startRecordVideo',
+        },
+        {
+          'type': 'waypointMission',
+          // For example purposes, we set our Point of Interest a few meters away, relative to the Drone's Home Location
+          'pointOfInterest': {
+            'latitude': droneHomeLocation!.latitude + (5 * 0.00000899322),
+            'longitude': droneHomeLocation!.longitude + (5 * 0.00000899322),
+            'altitude': droneHomeLocation!.altitude,
+          },
+          'maxFlightSpeed':
+              15.0, // Max Flight Speed is 15.0. If you enter a higher value - the waypoint mission won't start due to DJI limits.
+          'autoFlightSpeed': 10.0,
+          'finishedAction': 'noAction',
+          'headingMode': 'towardPointOfInterest',
+          'flightPathMode': 'curved',
+          'rotateGimbalPitch': true,
+          'exitMissionOnRCSignalLost': true,
+          'waypoints': [
+            {
+              // 'location': {
+              //   'latitude': 32.2181125,
+              //   'longitude': 34.8674920,
+              //   'altitude': 20.0,
+              // },
+              'vector': {
+                'distanceFromPointOfInterest': 20,
+                'headingRelativeToPointOfInterest': 45,
+                'destinationAltitude': 5,
+              },
+              //'heading': 0,
+              'cornerRadiusInMeters': 5,
+              'turnMode': 'clockwise',
+              // 'gimbalPitch': 0,
+            },
+            {
+              // 'location': {
+              //   'latitude': 32.2181125,
+              //   'longitude': 34.8674920,
+              //   'altitude': 5.0,
+              // },
+              'vector': {
+                'distanceFromPointOfInterest': 10,
+                'headingRelativeToPointOfInterest': -45,
+                'destinationAltitude': 3,
+              },
+              //'heading': 0,
+              'cornerRadiusInMeters': 5,
+              'turnMode': 'clockwise',
+              // 'gimbalPitch': 0,
+            },
+          ],
+        },
+        {
+          'type': 'stopRecordVideo',
+        },
+        {
+          'type': 'singleShootPhoto',
+        },
+        {
+          'type': 'land',
+        },
+      ],
+    });
+
+    // Converting any vector definitions in waypoint-mission to locations
+    for (dynamic element in flight.timeline) {
+      if (element.type == FlightElementType.waypointMission) {
+        CoordinatesConvertion
+            .convertWaypointMissionVectorsToLocationsWithGimbalPitch(
+                flightElementWaypointMission: element,
+                droneHomeLocation: droneHomeLocation!);
+      }
+    }
+
+    developer.log(
+      'Flight Object: ${jsonEncode(flight)}',
+      name: kLogKindDjiFlutterPlugin,
+    );
+
+    await Dji.start(flight: flight);
+    developer.log(
+      'Start Flight succeeded',
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } on PlatformException catch (e) {
+    developer.log(
+      'Start Flight PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'Start Flight Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+}
+</code></pre>
+<h5 id="notes">Notes</h5>
+<ul>
+<li>The waypoint-mission maxFlightSpeed can get a maximum value of 15.0. If you enter a higher value - the waypoint mission won't start due to DJI limits.</li>
+<li>If you don't specify the <code>gimbalPitch</code>, the Flutter DJI Plugin will automatically calculate the Gimbal (Camera) angle to point to the Point of Interest.</li>
+</ul>
+<h4 id="djimobileremotecontroller">Dji.mobileRemoteController</h4>
+<p>Update Mobile Remote Controller Sticks Data (via Wifi).
+Controls the mobile remote controller - an on-screen sticks controller.
+Available only when the drone is connected via Wifi.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _updateMobileRemoteController() async {
+  await Dji.mobileRemoteController(
+    enabled: true,
+    leftStickHorizontal: _leftStickHorizontal,
+    leftStickVertical: _leftStickVertical,
+    rightStickHorizontal: _rightStickHorizontal,
+    rightStickVertical: _rightStickVertical,
+  );
+}
+</code></pre>
+<h4 id="djivirtualstick">Dji.virtualStick</h4>
+<p>Update Virtual Stick flight controller data (via physical remote controller).
+Control whether the virtual-stick mode is <code>enabled</code>, and the <code>pitch</code>, <code>roll</code>, <code>yaw</code> and <code>verticalThrottle</code> of the Virtual Stick flight controller.
+Available only when the drone is connected to the physical remote controller.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _updateVirtualStick() async {
+  await Dji.virtualStick(
+    enabled: true,
+    pitch: _virtualStickPitch,
+    roll: _virtualStickRoll,
+    yaw: _virtualStickYaw,
+    verticalThrottle: _virtualStickVerticalThrottle,
+  );
+}
+</code></pre>
+<h4 id="djigimbalrotatepitch">Dji.gimbalRotatePitch</h4>
+<p>Update Gimbal pitch value in degrees.
+Controls the Gimbal pitch in <a href="https://pub.dev/documentation/vector_math/2.1.4/vector_math/degrees.html">degrees</a> (-90..0) in Absolute Mode.
+An angle of "0" degrees is aligned with the drone's "nose" (heading), and -90 degrees is the gimbal pointing the camera all the way down.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _updateGimbalRotatePitch() async {
+  await Dji.gimbalRotatePitch(
+    degrees: _gimbalPitchInDegrees,
+  );
+}
+</code></pre>
+<h4 id="djigetmedialist">Dji.getMediaList</h4>
+<p>Get the media files list from the Drone (SD card).
+The <code>Dji.getMediaList</code> Returns a list of Media files.
+The index of each file is used to download or delete the file.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;List&lt;Media?&gt;?&gt; _getMediaList() async {
+  List&lt;Media?&gt;? mediaList;
+
+  try {
+    developer.log(
+      'Get Media List requested',
+      name: kLogKindDjiFlutterPlugin,
+    );
+
+    mediaList = await Dji.getMediaList();
+
+    developer.log(
+      'Media List: $mediaList',
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } on PlatformException catch (e) {
+    developer.log(
+      'Get Media List PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'Get Media List Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+
+  return mediaList;
+}
+</code></pre>
+<h4 id="djidownloadmedia">Dji.downloadMedia</h4>
+<p>Downloads a specific media file from the Drone's SD card (by Index).
+The <code>fileIndex</code> is used to locate the relevant file from the Media List and download it.
+The <code>getMediaList()</code> must be triggered before using <code>downloadMedia()</code>.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _download() async {
+  try {
+    developer.log(
+      'Download requested',
+      name: kLogKindDjiFlutterPlugin,
+    );
+    // Downloading media file number "0" (a.k.a index: 0)
+    final fileUrl = await Dji.downloadMedia(0);
+    developer.log(
+      'Download successful: $fileUrl',
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } on PlatformException catch (e) {
+    developer.log(
+      'Download PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'Download Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+}
+</code></pre>
+<h4 id="djideletemedia">Dji.deleteMedia</h4>
+<p>Deletes a specific media file from the Drone's SD card (by Index).
+The <code>fileIndex</code> is used to locate the relevant file from the Media List and delete it.
+The <code>getMediaList()</code> must be triggered before using <code>downloadMedia()</code>.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _delete() async {
+  try {
+    developer.log(
+      'Delete requested',
+      name: kLogKindDjiFlutterPlugin,
+    );
+    // Deleting media file number "0" (a.k.a index: 0)
+    final deleted = await Dji.deleteMedia(0);
+    if (deleted == true) {
+      developer.log(
+        'Deleted successfully',
+        name: kLogKindDjiFlutterPlugin,
+      );
+    } else {
+      developer.log(
+        'Delete failed',
+        name: kLogKindDjiFlutterPlugin,
+      );
+    }
+  } on PlatformException catch (e) {
+    developer.log(
+      'Delete PlatformException Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  } catch (e) {
+    developer.log(
+      'Delete Error',
+      error: e,
+      name: kLogKindDjiFlutterPlugin,
+    );
+  }
+}
+</code></pre>
+<h4 id="djivideofeedstart">Dji.videoFeedStart</h4>
+<p>Starts the DJI Video Feeder.
+Triggers the DJI Camera Preview and streams YUV420p rawvideo byte-stream to the <code>DjiFlutterApi.sendVideo(Stream stream)</code> method.
+The <code>Stream</code> class has a <code>data</code> property of type <code>Uint8List</code> optional.
+The byte-stream can be converted to MP4, HLS or any other format using FFMPEG (see example code).</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _videoFeedStart() async {
+  await Dji.videoFeedStart();
+}
+</code></pre>
+<h4 id="djivideofeedstop">Dji.videoFeedStop</h4>
+<p>Stops the DJI Video Feeder.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _videoFeedStop() async {
+  await Dji.videoFeedStop();
+}
+</code></pre>
+<h4 id="sendvideo">sendVideo</h4>
+<p><strong>The <code>sendVideo()</code> method is triggered by the native host side of the plugin whenever a video byte-stream is sent.</strong></p>
+<p>Example:</p>
+<pre class="language-dart"><code>@override
+void sendVideo(Stream stream) {
+  if (stream.data != null &amp;&amp; _videoFeedFile != null) {
+    _videoFeedSink?.add(stream.data!);
+  }
+}
+</code></pre>
+<h4 id="djivideorecordstart">Dji.videoRecordStart</h4>
+<p>Starts the DJI Video Recorder.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _videoRecordStart() async {
+  await Dji.videoRecordStart();
+}
+</code></pre>
+<h4 id="djivideorecordstop">Dji.videoRecordStop</h4>
+<p>Stops the DJI Video Recorder.</p>
+<p>Example:</p>
+<pre class="language-dart"><code>Future&lt;void&gt; _videoRecordStop() async {
+  await Dji.videoRecordStop();
+}
+</code></pre>
+<h2 id="tech-notes">TECH NOTES</h2>
+<h3 id="plugin-creation-notes">Plugin Creation Notes</h3>
+<p>This project was created by the Flutter plugin template using:</p>
+<pre class="language-dart"><code>flutter create --org cloud.dragonx.plugin.flutter --template=plugin --platforms=ios -i swift dji
+</code></pre>
+<p>Android was added later on using:</p>
+<pre class="language-dart"><code>flutter create --org cloud.dragonx.plugin.flutter --template=plugin --platforms=android .
+</code></pre>
+<p>Note: The folder name is "dji", just like we specified in the original flutter create command for iOS (otherwise it will cause different package names and class paths).
+Also, when not specifying "-a java" - the Android project is Kotlin.
+We're using iOS Swift and Android Kotlin (The Android project is Kotlin, although the DJI SDK is in Java).</p>
+<p><code> ! </code> Important Note
+Make sure you <code>cd example</code> and run <code>flutter build ios --no-codesign</code> before starting to change anything in Xcode or Flutter.
+Otherwise, the plugin might not get built properly later on (I don't know why though).</p>
+<h3 id="pigeon">Pigeon</h3>
+<p>This plugin uses Pigeon:
+<a href="https://pub.dev/packages/pigeon">https://pub.dev/packages/pigeon</a></p>
+<p>To re-generate the Pigeon interfaces, execute:
+flutter pub run pigeon <br>
+--input pigeons/messages.dart <br>
+--dart_out lib/messages.dart <br>
+--objc_header_out ios/Classes/messages.h <br>
+--objc_source_out ios/Classes/messages.m <br>
+--objc_prefix FLT <br>
+--java_out android/src/main/java/cloud/dragonx/plugin/flutter/dji/Messages.java <br>
+--java_package "cloud.dragonx.plugin.flutter.dji"</p>
+<h4 id="pigeon-swift-example">Pigeon Swift Example</h4>
+<p><a href="https://github.com/DJI-Mobile-SDK-Tutorials/iOS-ImportAndActivateSDKInXcode-Swift">https://github.com/DJI-Mobile-SDK-Tutorials/iOS-ImportAndActivateSDKInXcode-Swift</a></p>
+<h4 id="pigeon-android-kotlin-example">Pigeon Android Kotlin Example</h4>
+<p><a href="https://github.com/gaaclarke/pigeon_plugin_example">https://github.com/gaaclarke/pigeon_plugin_example</a></p>
+<p>Example how to use FlutterAPI (trigger a function from the native platform side):
+<a href="https://github.com/glassmonkey/flutter_wifi/blob/master/android/app/src/main/kotlin/nagano/shunsuke/flutter_wifi_sample/WifiApi.kt">https://github.com/glassmonkey/flutter_wifi/blob/master/android/app/src/main/kotlin/nagano/shunsuke/flutter_wifi_sample/WifiApi.kt</a></p>
+<h3 id="notes-in-regards-to-dji-sdk">Notes in regards to DJI SDK</h3>
+<ul>
+<li>Decided not to implement the "Bridge App" support, because turned out that - for debugging / development purposes - it is much easier to simply connect to the drone's Wifi, and let it connect using it (instead of using the Remote Controller).</li>
+</ul>
+<p><code> ! </code> Important Note
+A bug in DJI's SDK in regards to Wifi Connection:
+If you're developing / debugging, and your phone is connected to the Drone's Wifi - it means your mobile device does NOT have any internet connection.
+Therefore, the Registration won't work.
+However, due to a bug in the SDK - the appRegisteredWithError() responds with a "success", although it actually fails.</p>
+<p>The solution is to first make sure you're disconnected from the Drone's Wifi - and let your App perform the Registration successfully.
+And only after it has been registered - connect your mobile device to the Drone's Wifi, and execute the startConnectionToProduct()</p>
+<p>Hint was taken from this issue on Github:
+<a href="https://github.com/dji-sdk/Mobile-SDK-Android/issues/232">https://github.com/dji-sdk/Mobile-SDK-Android/issues/232</a></p>
+<p><code> ! </code> Important Note
+Before using any DJI SDK methods - you must execute:</p>
+<pre class="language-dart"><code>Helper.install(this)
+</code></pre>
+<p>Usually this should be placed in your main application .kt file:
+For example:</p>
+<pre class="language-dart"><code>public class MyApplication : Application() {
+    override fun attachBaseContext(paramContext: Context?) {
+        super.attachBaseContext(paramContext)
+        Helper.install(this)
+    }
+}
+</code></pre>
+<h3 id="dji-references">DJI References</h3>
+<p><strong>Useful Tutorial</strong><br>
+<a href="https://www.tooploox.com/blog/automated-drone-missions-on-ios">https://www.tooploox.com/blog/automated-drone-missions-on-ios</a></p>
+<p><strong>iOS Swift Media Manager Demo by @godfreynolan</strong><br>
+Special thanks to this wonderful Swift tutorial by @godfreynolan:<br>
+<a href="https://riis.com/blog/dji-sdk-tutorial-creating-a-media-manager-application/">https://riis.com/blog/dji-sdk-tutorial-creating-a-media-manager-application/</a><br>
+<a href="https://github.com/godfreynolan/MediaManagerSwift">https://github.com/godfreynolan/MediaManagerSwift</a></p>
+<h3 id="debugging-android-over-wifi">Debugging Android over Wifi</h3>
+<p>Find your device IP Address through the Android &gt; Settings &gt; wifi.
+Connect it via USB cable and then run the following from your Desktop terminal:</p>
+<pre class="language-dart"><code>adb tcpip 4455
+</code></pre>
+<p>Then disconnect the USB cable, and run the following:</p>
+<pre class="language-dart"><code>adb connect {{your-android-ip}}:4455
+</code></pre>
+<h3 id="debugging-ios-over-wifi">Debugging iOS over Wifi</h3>
+<p>On iOS 14+, local network broadcast in apps need to be declared in the app's Info.plist.</p>
+<p>Debug and profile Flutter apps and modules host VM services on the local network to support debugging features such as hot reload and DevTools.</p>
+<p>To make your Flutter app or module attachable and debuggable, add a '_dartobservatory._tcp' value to the 'NSBonjourServices' key in your Info.plist for the Debug/Profile configurations.</p>
+<p>For more information, see <a href="https://flutter.dev/docs/development/add-to-app/ios/project-setup#local-network-privacy-permissions">https://flutter.dev/docs/development/add-to-app/ios/project-setup#local-network-privacy-permissions</a></p>
+<h3 id="a-tip-in-regards-to-package-names">A Tip in regards to Package Names</h3>
+<p>Due to inconsistencies between Google Play and Apple Appstore, there are differences in the "rules" that define what is a valid package-name.
+For example, the "-" character cannot be used for Android, but is valid for iOS.
+And with underscore there are issue when integrating with various Microsoft services (such as Microsoft Single Sign On).
+So our tip here is to use package names without "-" or underscore, and that's why in the above example we used <code>djiExample</code> instead of <code>dji_example</code> or <code>dji-example</code>.</p>
+<h3 id="tips--steps-before-publishing-a-flutter--dart-package">Tips &amp; Steps before publishing a Flutter / Dart Package</h3>
+<pre class="language-dart"><code>flutter analyze
+dart doc
+dart format .
+dart pub publish --dry-run
+dart pub publish
+</code></pre>
+<h3 id="video-streaming--decoding-tips">Video Streaming &amp; Decoding Tips</h3>
+<p>When using the <code>DJISDKManager.videoFeeder()?.primaryVideoFeed.add()</code> and listening to the incoming stream using <code>videoFeed()</code>, the DJI SDK generates a Byte Stream of h264 raw data.</p>
+<p>If you save the video-data to a file, we can play it using FFPLAY like so:</p>
+<pre class="language-dart"><code>ffplay -flags2 showall -f h264 -i ./video_feed.h264
+</code></pre>
+<p>We can convert it to .mp4 using FFMPEG like so:</p>
+<pre class="language-dart"><code>ffmpeg -flags2 showall -f h264 -i ./video_feed.h264 ./video_feed.mp4
+</code></pre>
+<p>To output stream by pipe and play:</p>
+<pre class="language-dart"><code>ffmpeg -i ./video_feed.mp4 -f mpegts - | ffplay -
+</code></pre>
+<p><em>Note:</em>
+The DJI Flutter plugin converts the H264 to YUV420p and so the sendVideo() method streams rawvideo YUV frames (and not H264 raw).</p>
+<p>To use FFMPEG in Flutter - use this package:
+<a href="https://pub.dev/packages/ffmpeg_kit_flutter">https://pub.dev/packages/ffmpeg_kit_flutter</a></p>
+<p>Tips about FFmpegKit:</p>
+<ol>
+<li>Set the Podfile iOS target to 15.0</li>
+<li>Look for the AppFrameworkInfo.plist and change the MinimumOSVersion to 15.0:</li>
+</ol>
+<pre class="language-dart"><code>&lt;key&gt;MinimumOSVersion&lt;/key&gt;
+&lt;string&gt;15.0&lt;/string&gt;
+</code></pre>
+<ol start="3">
+<li>Go into your iOS folder and run <code>pod install</code></li>
+</ol>
+<p>What is FFMPEG:
+<a href="https://medium.com/hamza-solutions/ffmpeg-tool-with-flutter-ac1d68c2fddb">https://medium.com/hamza-solutions/ffmpeg-tool-with-flutter-ac1d68c2fddb</a></p>
+<p>Flutter &amp; MUX:
+<a href="https://blog.codemagic.io/build-video-streaming-with-flutter-and-mux/">https://blog.codemagic.io/build-video-streaming-with-flutter-and-mux/</a></p>
+<p>Playing Byte Stream in Flutter:
+<a href="https://github.com/flutter/flutter/issues/59387">https://github.com/flutter/flutter/issues/59387</a>
+<a href="https://stackoverflow.com/questions/65821003/flutter-web-playing-uint8list-n-videoplayer/65834130">https://stackoverflow.com/questions/65821003/flutter-web-playing-uint8list-n-videoplayer/65834130</a></p>
+<p>VLC Player Tutorial:
+<a href="https://morioh.com/p/ddfd5bb6d250">https://morioh.com/p/ddfd5bb6d250</a></p>
+<p>Understanding Bytes in Dart:
+<a href="https://suragch.medium.com/working-with-bytes-in-dart-6ece83455721">https://suragch.medium.com/working-with-bytes-in-dart-6ece83455721</a></p>
+<p>Userful references in regards to DJI SDK Video decoding:
+<a href="https://github.com/dji-sdk/Mobile-SDK-iOS/issues/383">https://github.com/dji-sdk/Mobile-SDK-iOS/issues/383</a>
+<a href="https://github.com/dji-sdk/Mobile-SDK-iOS/blob/798b8f2579cb08c643c18cd16b36cdfd3b0962f7/Sample%2520Code/SwiftSampleCode/DJISDKSwiftDemo/Camera/VideoPreviewerAdapter.swift">https://github.com/dji-sdk/Mobile-SDK-iOS/blob/798b8f2579cb08c643c18cd16b36cdfd3b0962f7/Sample%20Code/SwiftSampleCode/DJISDKSwiftDemo/Camera/VideoPreviewerAdapter.swift</a>
+<a href="https://github.com/michael94ellis/iTello/blob/39bbceecb535395b8de9be3503db351d29f67a3e/iTello/VideoToolBox/VideoStreamManager.swift">https://github.com/michael94ellis/iTello/blob/39bbceecb535395b8de9be3503db351d29f67a3e/iTello/VideoToolBox/VideoStreamManager.swift</a>
+<a href="https://www.raywenderlich.com/20518849-an-in-depth-dive-into-streaming-data-across-platform-channels-on-flutter">https://www.raywenderlich.com/20518849-an-in-depth-dive-into-streaming-data-across-platform-channels-on-flutter</a>
+<a href="https://stackoverflow.com/questions/56170451/what-is-the-difference-between-methodchannel-eventchannel-basicmessagechannel/56171205#56171205">https://stackoverflow.com/questions/56170451/what-is-the-difference-between-methodchannel-eventchannel-basicmessagechannel/56171205#56171205</a>
+<a href="https://pub.dev/packages/chunked_stream">https://pub.dev/packages/chunked_stream</a>
+<a href="https://github.com/flutter/flutter/issues/71357">https://github.com/flutter/flutter/issues/71357</a></p>
+<p><a href="https://stackoverflow.com/questions/71613821/display-live-video-from-bytes-coming-from-websocket-in-flutter">https://stackoverflow.com/questions/71613821/display-live-video-from-bytes-coming-from-websocket-in-flutter</a></p>
+<p><a href="https://stackoverflow.com/questions/56284630/how-to-read-dji-h264-fpv-feed-as-opencv-mat-object">https://stackoverflow.com/questions/56284630/how-to-read-dji-h264-fpv-feed-as-opencv-mat-object</a>
+<a href="https://github.com/tanersener/flutter-ffmpeg/issues/126">https://github.com/tanersener/flutter-ffmpeg/issues/126</a>
+<a href="https://stackoverflow.com/questions/60988912/loading-video-files-from-device-as-bytedata-flutter">https://stackoverflow.com/questions/60988912/loading-video-files-from-device-as-bytedata-flutter</a></p>
+<p><a href="https://superuser.com/questions/1676797/how-to-convince-ffmpeg-that-input-is-raw-h264">https://superuser.com/questions/1676797/how-to-convince-ffmpeg-that-input-is-raw-h264</a>
+<a href="https://stackoverflow.com/questions/64737547/flutter-dart-rewriting-image-in-the-same-format">https://stackoverflow.com/questions/64737547/flutter-dart-rewriting-image-in-the-same-format</a></p>
+<p>How to pipe ffmpeg output to video_player flutter widget:
+<a href="https://github.com/tanersener/flutter-ffmpeg/issues/92">https://github.com/tanersener/flutter-ffmpeg/issues/92</a></p>
+<p>Techniques for reducing FFMPEG streaming latency:
+<a href="https://stackoverflow.com/questions/16658873/how-to-minimize-the-delay-in-a-live-streaming-with-ffmpeg">https://stackoverflow.com/questions/16658873/how-to-minimize-the-delay-in-a-live-streaming-with-ffmpeg</a></p>
+<p>VLC Latency at start:
+<a href="https://code.videolan.org/videolan/vlc/-/issues/26539">https://code.videolan.org/videolan/vlc/-/issues/26539</a></p>
+<p><a href="https://github.com/tanersener/flutter-ffmpeg/issues/71">https://github.com/tanersener/flutter-ffmpeg/issues/71</a>
+<a href="https://programmer.group/basic-usage-of-ffmpeg.html">https://programmer.group/basic-usage-of-ffmpeg.html</a>
+<a href="https://github.com/dart-lang/sdk/issues/32191">https://github.com/dart-lang/sdk/issues/32191</a>
+<a href="https://github.com/tanersener/flutter-ffmpeg/issues/92">https://github.com/tanersener/flutter-ffmpeg/issues/92</a>
+<a href="https://github.com/tanersener/ffmpeg-kit/issues/350">https://github.com/tanersener/ffmpeg-kit/issues/350</a>
+<a href="https://pub.dev/packages/fijkplayer">https://pub.dev/packages/fijkplayer</a></p>
+<p><a href="https://github.com/tanersener/ffmpeg-kit-test/blob/main/flutter/test-app-local-dependency/lib/pipe_tab.dart">https://github.com/tanersener/ffmpeg-kit-test/blob/main/flutter/test-app-local-dependency/lib/pipe_tab.dart</a>
+<a href="https://github.com/tanersener/ffmpeg-kit-test/blob/main/flutter/test-app-local-dependency/lib/video_util.dart">https://github.com/tanersener/ffmpeg-kit-test/blob/main/flutter/test-app-local-dependency/lib/video_util.dart</a></p>
+<p><a href="https://stackoverflow.com/questions/64847755/write-continuous-stream-to-file-flutter-dart">https://stackoverflow.com/questions/64847755/write-continuous-stream-to-file-flutter-dart</a></p>
+<p><a href="https://github.com/dji-sdk/DJIWidget/issues/9">https://github.com/dji-sdk/DJIWidget/issues/9</a></p>
+<p>Converting CVPixelBuffer to Data:
+<a href="https://gist.github.com/T1T4N/0ae90716b0c5d1bea39efe94512e1b72">https://gist.github.com/T1T4N/0ae90716b0c5d1bea39efe94512e1b72</a></p>
+<p>Swift DJICustomVideoFrameExtractor example:
+<a href="https://github.com/Darko28/DJIML/blob/2499fcc50b64c1d22162753ce442da16c0b2c425/DJIML/DJIMLViewController.swift">https://github.com/Darko28/DJIML/blob/2499fcc50b64c1d22162753ce442da16c0b2c425/DJIML/DJIMLViewController.swift</a></p>
+<p>HLS explained:
+<a href="https://www.toptal.com/apple/introduction-to-http-live-streaming-hls">https://www.toptal.com/apple/introduction-to-http-live-streaming-hls</a></p>
+<p>Solution for how to enable the VideoDataListener on Android:
+(search for "codecManager.enabledYuvData(true);")
+<a href="https://github.com/dji-sdk/Mobile-SDK-Android/issues/352">https://github.com/dji-sdk/Mobile-SDK-Android/issues/352</a></p>
+<h3 id="ffmpeg-xcode-bitcode-issue">FFMpeg Xcode BitCode Issue</h3>
+<p>If Xcode compilation fails with an error similar to this one:</p>
+<pre class="language-dart"><code>...FFmpeg.framework/FFmpeg' does not contain bitcode. You must rebuild it with bitcode enabled (Xcode setting ENABLE_BITCODE)...
+</code></pre>
+<p>Open Xcode &gt; for each Target (e.g. DJI-SDK-IOS, ffmpeg-kit-ios, etc.) - search for "BitCode" under the Build Settings section - and change to NO.</p>
+<h3 id="android-issue-with-the-better_player-plugin">Android issue with the better_player plugin</h3>
+<p>If you encounter the following error while trying to build the Android example project:</p>
+<pre class="language-dart"><code>Could not find com.mapbox.mapboxsdk:mapbox-android-accounts:0.7.0.
+</code></pre>
+<p>Add <code>jcenter()</code> to your android/build.gradle file:</p>
+<pre class="language-dart"><code>allprojects {
+    repositories {
+        ...
+        jcenter()
+    }
+}
+</code></pre>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="dji">
+  <span class="name"><a href="dji/dji-library.html">dji</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="flight">
+  <span class="name"><a href="flight/flight-library.html">flight</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="messages">
+  <span class="name"><a href="messages/messages-library.html">messages</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="https://dragonx.cloud/">dji package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">dji</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="dji/dji-library.html">dji</a></li>
+      <li><a href="flight/flight-library.html">flight</a></li>
+      <li><a href="messages/messages-library.html">messages</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    dji
+      1.0.13
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
